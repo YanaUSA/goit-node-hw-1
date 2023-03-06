@@ -8,8 +8,6 @@ const getParsedPath = async (filePath) => {
   return JSON.parse(readFile);
 };
 
-// console.log("getParsedPath", getParsedPath);
-
 /**
  * Reads contact list
  *@returns {Promise<void>}
