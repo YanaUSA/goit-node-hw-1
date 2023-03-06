@@ -3,24 +3,29 @@ const fs = require("fs").promises;
 
 const contactsPath = path.resolve("db/contacts.json");
 
+const getParsedPath = async (filePath) => {
+  const readFile = await fs.readFile(filePath);
+  return JSON.parse(readFile);
+};
+
+// console.log("getParsedPath", getParsedPath);
+
 /**
  * Reads contact list
  *@returns {Promise<void>}
  */
 async function listContacts() {
   try {
-    const readContacts = await fs.readFile(contactsPath);
+    const readContactsData = await getParsedPath(contactsPath);
 
-    const parsedData = JSON.parse(readContacts);
+    console.table(readContactsData);
 
-    console.table(parsedData);
-
-    return parsedData;
+    return readContactsData;
   } catch (error) {
     console.log(error.message);
   }
 }
-
+/////////////////////////////////////////////////////
 /**
  * Finds contact by ID
  * @param {<string>}
@@ -28,18 +33,16 @@ async function listContacts() {
  */
 async function getContactById(contactId) {
   try {
-    const contacts = await listContacts();
+    const contacts = await getParsedPath(contactsPath);
 
-    const resultById = await contacts.find((el) => el.id === contactId);
+    const resultById = contacts.find((el) => el.id === contactId);
 
     console.table(resultById);
-
-    return resultById;
   } catch (error) {
     console.log(error.message);
   }
 }
-
+///////////////////////////////////////////////////
 /**
  * Removes contact by ID
  * @param {<string>}
@@ -47,23 +50,23 @@ async function getContactById(contactId) {
  */
 async function removeContact(contactId) {
   try {
-    const contacts = await listContacts();
+    const contacts = await getParsedPath(contactsPath);
 
-    const deletedContact = await contacts.filter((el) => el.id !== contactId);
+    const deletedContact = contacts.filter((el) => el.id !== contactId);
 
-    const newContactArray = await fs.writeFile(
+    const resultOnRemove = await fs.writeFile(
       contactsPath,
       JSON.stringify(deletedContact)
     );
 
-    console.table(newContactArray);
+    console.table(deletedContact);
 
-    return newContactArray;
+    return resultOnRemove;
   } catch (error) {
     console.log(error.message);
   }
 }
-
+///////////////////////////////////////////////////
 /**
  * Adds new contact
  * @param {<string>}
@@ -71,7 +74,7 @@ async function removeContact(contactId) {
  */
 async function addContact(name, email, phone) {
   try {
-    const contacts = await listContacts();
+    const contacts = await getParsedPath(contactsPath);
 
     const newContact = {
       id: `${contacts.length + 1}`,
@@ -82,14 +85,14 @@ async function addContact(name, email, phone) {
 
     const newData = [...contacts, newContact];
 
-    const removeResult = await fs.writeFile(
+    const addedContacts = await fs.writeFile(
       contactsPath,
       JSON.stringify(newData)
     );
 
-    console.table(removeResult);
+    console.table(newData);
 
-    return removeResult;
+    return addedContacts;
   } catch (error) {
     console.log(error.message);
   }

@@ -5,11 +5,6 @@ const {
   addContact,
 } = require("./contacts.js");
 
-// listContacts();
-// getContactById("3");
-// removeContact("1");
-// addContact("Ann Dane", "ann@mail.com", "(097) 555-22-22");
-
 const { Command } = require("commander");
 const program = new Command();
 program
@@ -34,7 +29,7 @@ function invokeAction({ action, id, name, email, phone }) {
       break;
 
     case "add":
-      addContact({ id, name, email, phone });
+      addContact(name, email, phone);
       break;
 
     case "remove":
