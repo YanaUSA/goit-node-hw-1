@@ -1,5 +1,3 @@
-// const argv = require("yargs").argv;
-
 const {
   listContacts,
   getContactById,
@@ -8,43 +6,44 @@ const {
 } = require("./contacts.js");
 
 // listContacts();
-
 // getContactById("3");
-
 // removeContact("1");
-
 // addContact("Ann Dane", "ann@mail.com", "(097) 555-22-22");
 
-// console.log("||=================>");
-// console.log(listContacts());
-// console.log("<=================||");
+const { Command } = require("commander");
+const program = new Command();
+program
+  .option("-a, --action <type>", "choose action")
+  .option("-i, --id <type>", "user id")
+  .option("-n, --name <type>", "user name")
+  .option("-e, --email <type>", "user email")
+  .option("-p, --phone <type>", "user phone");
 
-// // TODO: рефакторить
-// function invokeAction({ action, id, name, email, phone }) {
-//   switch (action) {
-//     case "list":
-//       // ...
-//       break;
+program.parse(process.argv);
 
-//     case "get":
-//       // ... id
-//       break;
+const argv = program.opts();
 
-//     case "add":
-//       // ... name email phone
-//       break;
+function invokeAction({ action, id, name, email, phone }) {
+  switch (action) {
+    case "list":
+      listContacts();
+      break;
 
-//     case "remove":
-//       // ... id
-//       break;
+    case "get":
+      getContactById(id);
+      break;
 
-//     default:
-// console.warn("\x1B[31m Unknown action type!");
-//   }
-// }
+    case "add":
+      addContact({ id, name, email, phone });
+      break;
 
-// invokeAction(argv);
+    case "remove":
+      removeContact(id);
+      break;
 
-// console.log("||=================>");
-// console.log("first");
-// console.log("<=================||");
+    default:
+      console.warn("\x1B[31m Unknown action type!");
+  }
+}
+
+invokeAction(argv);
